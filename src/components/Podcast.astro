@@ -1,0 +1,65 @@
+---
+import { PODCAST_INFO, EPISODE_GROUPS, AUDIENCE_TAG } from '../data/podcast.js';
+---
+
+<section id="podcast">
+  <div class="container">
+    <div class="podcast-grid">
+
+      <!-- Info -->
+      <div class="podcast-info reveal" id="podcastInfoContent">
+        <div class="section-tag purple">{PODCAST_INFO.tagLabel}</div>
+        <h2>{PODCAST_INFO.name}</h2>
+        <p>{PODCAST_INFO.description}</p>
+
+        <div class="podcast-highlight">
+          <div class="hl-label">{PODCAST_INFO.highlight.label}</div>
+          <div class="hl-name">{PODCAST_INFO.highlight.name}</div>
+          <p>{PODCAST_INFO.highlight.description}</p>
+        </div>
+
+        <div class="podcast-format">
+          <h4>Formato del episodio</h4>
+          <ul>
+            {PODCAST_INFO.format.map((step) => <li>{step}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Episodes -->
+      <div class="reveal" style="transition-delay:0.15s">
+        <div class="episodes-list" id="episodesList">
+          {EPISODE_GROUPS.map((group) => (
+            <>
+              <div class="ep-group-label">{group.label}</div>
+              {group.episodes.map((ep) => (
+                <div class="ep-card">
+                  <span class="ep-num">{ep.num}</span>
+                  <span class="ep-title">{ep.title}</span>
+                  <span class={`ep-tag ${AUDIENCE_TAG[group.audience].cssClass}`}>
+                    {AUDIENCE_TAG[group.audience].label}
+                  </span>
+                </div>
+              ))}
+            </>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  import { loadPodcast, renderPodcast } from '../scripts/podcast-data.js';
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const data = await loadPodcast();
+      // null → sin API key, se conserva el HTML renderizado en build time
+      if (data) renderPodcast(data.info, data.groups);
+    } catch (err) {
+      console.error('[podcast] Error al cargar desde Google Sheets:', err);
+    }
+  });
+</script>

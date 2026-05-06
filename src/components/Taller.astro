@@ -1,0 +1,88 @@
+---
+const fases = [
+  {
+    num: '1',
+    name: 'Activación',
+    time: '10 minutos',
+    title: 'Encendido de motores',
+    items: ['Juegos motores atencionales', 'Coordinación y alerta cerebral'],
+  },
+  {
+    num: '2',
+    name: 'Entrenamiento',
+    time: '40 minutos',
+    title: 'Entrenamiento Cognitivo',
+    items: ['Memoria de trabajo', 'Control inhibitorio', 'Atención sostenida', 'Flexibilidad cognitiva'],
+  },
+  {
+    num: '3',
+    name: 'Regulación',
+    time: '20 minutos',
+    title: 'Regulación Emocional',
+    items: ['Técnicas de respiración', 'Pausa cerebral', 'Identificación emocional'],
+  },
+  {
+    num: '4',
+    name: 'Misión 🚀',
+    time: '20 minutos',
+    title: 'Misión Marte',
+    items: ['Reto grupal cooperativo', 'Cierre de logro personal'],
+  },
+];
+---
+
+<section id="taller">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag reveal">Taller</div>
+      <h2 class="reveal" style="transition-delay:0.1s">Misión Marte</h2>
+    </div>
+
+    <div class="taller-wrapper reveal">
+      <div class="taller-top">
+        <div>
+          <div class="section-tag">🪐 Misión Marte</div>
+          <h2>Entrenamos cerebros para vivir en el mundo digital</h2>
+          <p>
+            Un taller presencial de 90 minutos diseñado para niños de 6 a 12 años. Combinamos
+            movimiento, cognición y regulación emocional en cuatro fases progresivas que simulan
+            un viaje espacial.
+          </p>
+        </div>
+        <div class="price-box">
+          <div class="price-label">Valor por niño</div>
+          <div class="price-value">$80.000</div>
+          <div class="price-currency">COP por sesión</div>
+          <div class="price-sep"></div>
+          <div class="price-group">
+            Grupo completo (8 niños)<br><strong>$640.000</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="taller-fases">
+        {fases.map((fase) => (
+          <div class="fase">
+            <div class="fase-header">
+              <div class="fase-num">{fase.num}</div>
+              <div class="fase-name">{fase.name}</div>
+            </div>
+            <div class="fase-time">⏱ {fase.time}</div>
+            <h4>{fase.title}</h4>
+            <ul>
+              {fase.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div class="taller-bottom">
+        <p class="taller-quote">
+          Entrenamos cerebros infantiles para vivir en un mundo digital sin perder la atención,
+          el aprendizaje y el amor propio.
+        </p>
+        <a href="#contacto" class="btn-primary">Reservar cupo 🚀</a>
+      </div>
+    </div>
+  </div>
+</section>

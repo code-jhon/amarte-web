@@ -1,0 +1,72 @@
+---
+const lineas = [
+  {
+    num: '01',
+    emoji: '🧠',
+    title: 'Cerebro y Atención',
+    description: 'Neurociencia aplicada al desarrollo: cómo funciona el cerebro en crecimiento y qué factores afectan la atención y el aprendizaje.',
+    tags: ['TDAH', 'Funciones ejecutivas', 'Neuroplasticidad', 'Memoria'],
+    chipClass: 'chip-mars',
+    chipLabel: '👥 Docentes y padres',
+    delay: '',
+  },
+  {
+    num: '02',
+    emoji: '📱',
+    title: 'Tecnología y Salud Mental',
+    description: 'El impacto de las pantallas y las redes sociales en el desarrollo cerebral, la autoestima y los hábitos de niños y adolescentes.',
+    tags: ['Pantallas', 'Autoestima', 'Videojuegos', 'Límites'],
+    chipClass: 'chip-nebula',
+    chipLabel: '👥 Padres y adolescentes',
+    delay: '0.1s',
+  },
+  {
+    num: '03',
+    emoji: '💛',
+    title: 'Amor Propio y Regulación Emocional',
+    description: 'Herramientas prácticas para el manejo de la impulsividad, la ansiedad y el desarrollo de una identidad emocional saludable.',
+    tags: ['Autoestima', 'Impulsividad', 'Ansiedad', 'Validación'],
+    chipClass: 'chip-mint',
+    chipLabel: '👥 Familias y estudiantes',
+    delay: '0.2s',
+  },
+  {
+    num: '04',
+    emoji: '📚',
+    title: 'Aprendizaje y Escuela Neurocompatible',
+    description: 'Estrategias pedagógicas basadas en neurociencia para crear entornos de aprendizaje que respeten el funcionamiento cerebral.',
+    tags: ['Aula inclusiva', 'Déficit atencional', 'Movimiento', 'Motivación'],
+    chipClass: 'chip-blue',
+    chipLabel: '👥 Docentes',
+    delay: '0.3s',
+  },
+];
+---
+
+<section id="lineas">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag reveal">Servicios</div>
+      <h2 class="reveal" style="transition-delay:0.1s">Cuatro líneas para llegar a Marte</h2>
+      <p class="reveal" style="transition-delay:0.2s">
+        Contenidos y programas diseñados para las diferentes personas que acompañan el desarrollo
+        infantil y adolescente.
+      </p>
+    </div>
+
+    <div class="lineas-grid">
+      {lineas.map((linea) => (
+        <div class="linea-card reveal" style={linea.delay ? `transition-delay:${linea.delay}` : ''}>
+          <div class="linea-num">{linea.num}</div>
+          <span class="linea-emoji">{linea.emoji}</span>
+          <h3>{linea.title}</h3>
+          <p>{linea.description}</p>
+          <div class="tags">
+            {linea.tags.map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+          <span class={`audience-chip ${linea.chipClass}`}>{linea.chipLabel}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

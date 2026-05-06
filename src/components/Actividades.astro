@@ -1,0 +1,65 @@
+---
+import { ACTIVIDADES_MOCK, EVENT_TYPE } from '../data/actividades.js';
+---
+
+<section id="actividades">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag reveal">Calendario</div>
+      <h2 class="reveal" style="transition-delay:0.1s">Misiones programadas</h2>
+      <p class="reveal" style="transition-delay:0.2s">
+        Actividades presenciales y virtuales para familias, docentes y adolescentes.
+      </p>
+    </div>
+
+    <div class="actividades-grid" id="actividadesGrid">
+      {ACTIVIDADES_MOCK.map((event, i) => {
+        const type = EVENT_TYPE[event.type];
+        const delay = (Math.floor(i / 3) * 0.05) + (i % 3) * 0.1;
+        return (
+          <div
+            class="event-card reveal"
+            style={delay > 0 ? `transition-delay:${delay}s` : ''}
+          >
+            <div class="event-header">
+              <div class="event-date">
+                <div class="event-month" style={`color:${type.monthColor}`}>{event.month}</div>
+                <div class="event-day">{event.day}</div>
+              </div>
+              <div class="event-sep"></div>
+              <div class="event-time">{event.time}</div>
+              <span class={`event-type-badge ${type.badgeClass}`}>{type.label}</span>
+            </div>
+            <div class="event-body">
+              <h3>{event.title}</h3>
+              <p>{event.description}</p>
+              <div class="event-meta">
+                <span>📍 {event.location}</span>
+                <span>👥 {event.audience}</span>
+                <span>⏱ {event.duration}</span>
+              </div>
+              <div class="event-footer">
+                <span class={`event-price${event.free ? ' free' : ''}`}>{event.price}</span>
+                <button class={`btn-sm ${type.btnClass}`}>{event.btnLabel}</button>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { loadActividades, renderActividades } from '../scripts/actividades-data.js';
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const events = await loadActividades();
+      // null → sin API key, se conserva el HTML renderizado en build time
+      if (events) renderActividades(events);
+    } catch (err) {
+      console.error('[actividades] Error al cargar desde Google Sheets:', err);
+    }
+  });
+</script>

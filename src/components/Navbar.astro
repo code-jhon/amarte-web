@@ -1,0 +1,47 @@
+---
+---
+
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Neuro <span>A_Marte</span></a>
+  <ul class="nav-links">
+    <li><a href="#concepto">El Concepto</a></li>
+    <li><a href="#lineas">Servicios</a></li>
+    <li><a href="#taller">Taller</a></li>
+    <li><a href="#podcast">Podcast</a></li>
+    <li><a href="#actividades">Actividades</a></li>
+    <li><a href="#contacto" class="nav-cta">Contáctame</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="#concepto">El Concepto</a>
+  <a href="#lineas">Servicios</a>
+  <a href="#taller">Taller</a>
+  <a href="#podcast">Podcast</a>
+  <a href="#actividades">Actividades</a>
+  <a href="#contacto" style="color:var(--mars)">Contáctame</a>
+</div>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileClose = document.getElementById('mobileClose');
+
+  function closeMenu() {
+    mobileMenu?.classList.remove('open');
+  }
+
+  hamburger?.addEventListener('click', () => mobileMenu?.classList.toggle('open'));
+  mobileClose?.addEventListener('click', closeMenu);
+  mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+
+  // Navbar scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar?.classList.toggle('scrolled', window.scrollY > 60);
+  });
+</script>

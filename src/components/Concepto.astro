@@ -1,0 +1,59 @@
+---
+const items = [
+  {
+    iconClass: 'icon-mars',
+    emoji: '🌍',
+    title: 'La Tierra — El problema',
+    text: 'Sobreestimulación digital, pantallas constantes, impulsividad y dificultades atencionales que afectan el aprendizaje y las relaciones.',
+  },
+  {
+    iconClass: 'icon-nebula',
+    emoji: '🚀',
+    title: 'El Viaje — El proceso',
+    text: 'Intervención psicológica, talleres cognitivos y herramientas prácticas basadas en neurociencia aplicada al desarrollo infantil.',
+  },
+  {
+    iconClass: 'icon-mint',
+    emoji: '🪐',
+    title: 'Marte — La meta',
+    text: 'Autorregulación emocional, atención sostenida, amor propio y bienestar cerebral en un mundo digital.',
+  },
+];
+---
+
+<section id="concepto">
+  <div class="container">
+    <div class="concepto-grid">
+
+      <div class="planet-visual reveal">
+        <div class="planet-sphere"></div>
+        <div class="planet-ring"></div>
+        <div class="planet-label label-earth">🌍 Tierra: ruido digital</div>
+        <div class="planet-label label-journey">✨ El viaje terapéutico</div>
+        <div class="planet-label label-mars">🪐 Marte: bienestar</div>
+      </div>
+
+      <div class="concepto-text reveal" style="transition-delay:0.15s">
+        <div class="section-tag">¿Qué es Neuro A_Marte?</div>
+        <h2>Una metáfora que cambia cerebros</h2>
+        <p>
+          Neuro A_Marte es un proyecto de psicología infantil y adolescente que usa el viaje
+          espacial como metáfora del proceso terapéutico: partimos de la Tierra digital y viajamos
+          hacia Marte, un estado de calma, atención y autorregulación.
+        </p>
+        <div class="concepto-items">
+          {items.map((item) => (
+            <div class="concepto-item">
+              <div class={`concepto-icon ${item.iconClass}`}>{item.emoji}</div>
+              <div>
+                <h4>{item.title}</h4>
+                <p>{item.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

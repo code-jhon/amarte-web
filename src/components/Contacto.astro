@@ -1,0 +1,123 @@
+---
+---
+
+<section id="contacto">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag reveal">Contacto</div>
+      <h2 class="reveal" style="transition-delay:0.1s">¿Listo para despegar?</h2>
+      <p class="reveal" style="transition-delay:0.2s">Escríbenos y comencemos el viaje juntos.</p>
+    </div>
+
+    <div class="contacto-grid">
+
+      <div class="contacto-info reveal">
+        <div class="contact-cards">
+          <div class="contact-card">
+            <div class="contact-icon">📱</div>
+            <div>
+              <div class="contact-card-label">WhatsApp</div>
+              <div class="contact-card-value">+57 300 268 5861</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">📧</div>
+            <div>
+              <div class="contact-card-label">Correo</div>
+              <div class="contact-card-value">hola@neuroamarte.com</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">📍</div>
+            <div>
+              <div class="contact-card-label">Ubicación</div>
+              <div class="contact-card-value">Cali, Colombia</div>
+              <div class="contact-card-sub">También disponible de forma virtual</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">🕐</div>
+            <div>
+              <div class="contact-card-label">Horarios</div>
+              <div class="contact-card-value">Lun – Vie</div>
+              <div class="contact-card-sub">8:00am – 5:00pm</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">📸</div>
+            <div>
+              <div class="contact-card-label">Instagram</div>
+              <div class="contact-card-value">@neuro_a_marte</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form reveal" style="transition-delay:0.15s">
+        <form id="contactForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input id="inputNombre" type="text" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input id="inputTelefono" type="tel" placeholder="+57 000 000 0000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input id="inputCorreo" type="email" placeholder="tu@correo.com" required>
+          </div>
+          <div class="form-group">
+            <label>¿Qué te interesa?</label>
+            <select id="inputInteres" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option>Taller Misión Marte</option>
+              <option>Charla para padres</option>
+              <option>Taller para docentes</option>
+              <option>Consulta psicológica</option>
+              <option>Podcast y contenido</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mensaje</label>
+            <textarea id="inputMensaje" placeholder="Cuéntanos en qué podemos ayudarte..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn">Escribir por WhatsApp 💬</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById('contactForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const nombre   = document.getElementById('inputNombre').value.trim();
+    const telefono = document.getElementById('inputTelefono').value.trim();
+    const correo   = document.getElementById('inputCorreo').value.trim();
+    const interes  = document.getElementById('inputInteres').value.trim();
+    const mensaje  = document.getElementById('inputMensaje').value.trim();
+
+    let texto = `¡Hola! Me llamo ${nombre} y encontré su página web de Neuro A_Marte. Me gustaría obtener más información sobre *${interes}*.`;
+    if (mensaje) texto += `\n\n${mensaje}`;
+    texto += `\n\nMi correo es ${correo}`;
+    if (telefono) texto += ` y mi número de contacto es ${telefono}`;
+    texto += `. ¡Muchas gracias!`;
+
+    const url = `https://wa.me/573002685861?text=${encodeURIComponent(texto)}`;
+    window.open(url, '_blank');
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = '¡Abriendo WhatsApp! ✅';
+    btn.classList.add('sent');
+    setTimeout(() => {
+      btn.textContent = 'Escribir por WhatsApp 💬';
+      btn.classList.remove('sent');
+    }, 3000);
+  });
+</script>

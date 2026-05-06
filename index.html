@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuro A_Marte — Psicología Infantil y Adolescente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="font-link" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mars: #F4651A;
+    --mars-light: #FF8A4A;
+    --nebula: #7B5ECC;
+    --nebula-light: #A88DE8;
+    --mint: #3ECFA0;
+    --cosmos: #06030F;
+    --cosmos-2: #0E0820;
+    --cosmos-3: #160E30;
+    --star-white: #F8F4FF;
+    --text-primary: #F0EAF8;
+    --text-secondary: #BDB5D4;
+    --text-muted: #7A7292;
+    --card-bg: rgba(22,14,48,0.7);
+    --card-border: rgba(123,94,204,0.25);
+    --blue: #2B6BE8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cosmos);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  #star-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── UTILS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mars-light);
+    background: rgba(244,101,26,0.1);
+    border: 1px solid rgba(244,101,26,0.25);
+    padding: 5px 14px;
+    border-radius: 100px;
+  }
+  .section-tag.purple {
+    color: var(--nebula-light);
+    background: rgba(123,94,204,0.1);
+    border-color: rgba(123,94,204,0.25);
+  }
+  .section-tag.mint {
+    color: var(--mint);
+    background: rgba(62,207,160,0.1);
+    border-color: rgba(62,207,160,0.25);
+  }
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 28px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(12px);
+    background: rgba(6,3,15,0.3);
+    border-bottom: 1px solid rgba(123,94,204,0.1);
+    transition: background 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(6,3,15,0.85);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .nav-logo span { color: var(--mars); }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text-primary); }
+  .nav-cta {
+    background: var(--mars);
+    color: #fff !important;
+    padding: 9px 22px;
+    border-radius: 100px;
+    font-weight: 700 !important;
+    font-size: 0.875rem !important;
+    box-shadow: 0 0 20px rgba(244,101,26,0.35);
+    transition: box-shadow 0.2s, transform 0.2s !important;
+  }
+  .nav-cta:hover {
+    box-shadow: 0 0 32px rgba(244,101,26,0.55) !important;
+    transform: translateY(-1px);
+  }
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 6px;
+    background: none;
+    border: none;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+
+  /* Mobile menu */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+    background: rgba(6,3,15,0.97);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--mars); }
+  .mobile-close {
+    position: absolute;
+    top: 22px; right: 28px;
+    font-size: 2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 28px 60px;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .hero-planet {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, rgba(244,101,26,0.25) 0%, rgba(244,101,26,0.05) 50%, transparent 70%);
+    opacity: 0.08;
+    animation: pulse 6s ease-in-out infinite;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.08; }
+    50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.13; }
+  }
+  .orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(244,101,26,0.15);
+    top: 50%; left: 50%;
+    pointer-events: none;
+  }
+  .orbit-ring-1 {
+    width: 500px; height: 200px;
+    transform: translate(-50%, -50%) rotateX(75deg);
+    animation: spin1 20s linear infinite;
+  }
+  .orbit-ring-2 {
+    width: 700px; height: 280px;
+    transform: translate(-50%, -50%) rotateX(75deg);
+    animation: spin2 32s linear infinite;
+  }
+  @keyframes spin1 { from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); } to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); } }
+  @keyframes spin2 { from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); } to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(-360deg); } }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(244,101,26,0.12);
+    border: 1px solid rgba(244,101,26,0.35);
+    color: var(--mars-light);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 7px 18px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    color: var(--star-white);
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero-title .accent { color: var(--mars); }
+  .hero-title .underline-word {
+    position: relative;
+    display: inline-block;
+  }
+  .hero-title .underline-word::after {
+    content: '';
+    position: absolute;
+    bottom: 2px; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--mars), var(--mars-light));
+    border-radius: 2px;
+    opacity: 0.7;
+  }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+    font-weight: 400;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--mars);
+    color: #fff;
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 32px rgba(244,101,26,0.45);
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 4px 48px rgba(244,101,26,0.65);
+    transform: translateY(-2px);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--text-primary);
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(240,234,248,0.2);
+    transition: border-color 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+  .btn-secondary:hover {
+    border-color: rgba(240,234,248,0.45);
+    background: rgba(240,234,248,0.05);
+  }
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--mars);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(123,94,204,0.2);
+    align-self: center;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS GENERAL ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 0;
+  }
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .section-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--star-white);
+    margin-top: 12px;
+    line-height: 1.15;
+  }
+  .section-header p {
+    color: var(--text-secondary);
+    margin-top: 14px;
+    font-size: 1.05rem;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── CONCEPTO ── */
+  #concepto {
+    background: linear-gradient(180deg, var(--cosmos) 0%, var(--cosmos-2) 100%);
+  }
+  .concepto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .planet-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+  }
+  .planet-sphere {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--mars-light), var(--mars) 50%, #8B2E00 100%);
+    box-shadow: 0 0 80px rgba(244,101,26,0.4), 0 0 160px rgba(244,101,26,0.1);
+    position: relative;
+    z-index: 2;
+  }
+  .planet-ring {
+    position: absolute;
+    width: 320px;
+    height: 80px;
+    border: 2px solid rgba(244,101,26,0.25);
+    border-radius: 50%;
+    transform: rotateX(75deg) rotateZ(-20deg);
+    animation: spinSlow 25s linear infinite;
+  }
+  @keyframes spinSlow { to { transform: rotateX(75deg) rotateZ(calc(-20deg + 360deg)); } }
+  .planet-label {
+    position: absolute;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .label-earth { top: 40px; left: 0; color: var(--text-muted); }
+  .label-mars { bottom: 60px; right: 0; color: var(--mars); border-color: rgba(244,101,26,0.3); }
+  .label-journey { top: 50%; transform: translateY(-50%); right: -10px; color: var(--nebula-light); border-color: rgba(168,141,232,0.3); }
+
+  .concepto-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--star-white);
+    margin: 12px 0 16px;
+    line-height: 1.2;
+  }
+  .concepto-text > p {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 32px;
+    font-size: 1rem;
+  }
+  .concepto-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .concepto-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .concepto-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .icon-mars { background: rgba(244,101,26,0.12); }
+  .icon-nebula { background: rgba(123,94,204,0.12); }
+  .icon-mint { background: rgba(62,207,160,0.12); }
+  .concepto-item h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .concepto-item p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── LÍNEAS TEMÁTICAS ── */
+  #lineas { background: var(--cosmos); }
+  .lineas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .linea-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 32px;
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  }
+  .linea-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+  }
+  .linea-card:nth-child(1)::before { background: var(--mars); }
+  .linea-card:nth-child(2)::before { background: var(--nebula); }
+  .linea-card:nth-child(3)::before { background: var(--mint); }
+  .linea-card:nth-child(4)::before { background: var(--blue); }
+  .linea-card:hover { transform: translateY(-6px); }
+  .linea-card:nth-child(1):hover { box-shadow: 0 16px 48px rgba(244,101,26,0.2); border-color: rgba(244,101,26,0.4); }
+  .linea-card:nth-child(2):hover { box-shadow: 0 16px 48px rgba(123,94,204,0.2); border-color: rgba(123,94,204,0.4); }
+  .linea-card:nth-child(3):hover { box-shadow: 0 16px 48px rgba(62,207,160,0.2); border-color: rgba(62,207,160,0.4); }
+  .linea-card:nth-child(4):hover { box-shadow: 0 16px 48px rgba(43,107,232,0.2); border-color: rgba(43,107,232,0.4); }
+  .linea-num {
+    position: absolute;
+    top: 16px; right: 24px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    font-weight: 700;
+    opacity: 0.07;
+    line-height: 1;
+  }
+  .linea-emoji {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .linea-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--star-white);
+    margin-bottom: 8px;
+  }
+  .linea-card p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-secondary);
+  }
+  .audience-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-top: auto;
+  }
+  .chip-mars { background: rgba(244,101,26,0.1); color: var(--mars-light); border: 1px solid rgba(244,101,26,0.2); }
+  .chip-nebula { background: rgba(123,94,204,0.1); color: var(--nebula-light); border: 1px solid rgba(123,94,204,0.2); }
+  .chip-mint { background: rgba(62,207,160,0.1); color: var(--mint); border: 1px solid rgba(62,207,160,0.2); }
+  .chip-blue { background: rgba(43,107,232,0.1); color: #6B9EFF; border: 1px solid rgba(43,107,232,0.2); }
+
+  /* ── TALLER ── */
+  #taller { background: var(--cosmos-2); }
+  .taller-wrapper {
+    border: 1px solid rgba(244,101,26,0.2);
+    border-radius: 28px;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+  }
+  .taller-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    padding: 56px;
+    background: rgba(244,101,26,0.04);
+    align-items: start;
+  }
+  .taller-top h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--star-white);
+    margin: 12px 0 16px;
+    line-height: 1.15;
+  }
+  .taller-top p {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    font-size: 0.975rem;
+    max-width: 560px;
+  }
+  .price-box {
+    background: var(--card-bg);
+    border: 1px solid rgba(244,101,26,0.3);
+    border-radius: 18px;
+    padding: 28px 32px;
+    min-width: 240px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .price-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .price-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--mars);
+    line-height: 1;
+  }
+  .price-currency {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .price-sep {
+    height: 1px;
+    background: rgba(244,101,26,0.15);
+    margin: 16px 0;
+  }
+  .price-group {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .price-group strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  .taller-fases {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid rgba(244,101,26,0.1);
+    position: relative;
+  }
+  .taller-fases::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 12.5%; right: 12.5%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(244,101,26,0.3), transparent);
+    pointer-events: none;
+  }
+  .fase {
+    padding: 36px 28px;
+    border-right: 1px solid rgba(244,101,26,0.08);
+    position: relative;
+  }
+  .fase:last-child { border-right: none; }
+  .fase-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .fase-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(244,101,26,0.15);
+    border: 1px solid rgba(244,101,26,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--mars);
+  }
+  .fase-name {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .fase-time {
+    font-size: 0.75rem;
+    color: var(--mars-light);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .fase h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+  .fase ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .fase ul li {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .fase ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--mars);
+    opacity: 0.5;
+  }
+  .taller-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 36px 56px;
+    background: rgba(6,3,15,0.5);
+    border-top: 1px solid rgba(244,101,26,0.1);
+    flex-wrap: wrap;
+  }
+  .taller-quote {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 0.925rem;
+    max-width: 520px;
+    line-height: 1.7;
+  }
+  .taller-quote::before { content: '"'; }
+  .taller-quote::after { content: '"'; }
+
+  /* ── PODCAST ── */
+  #podcast { background: var(--cosmos); }
+  .podcast-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .podcast-info h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--star-white);
+    margin: 12px 0 16px;
+    line-height: 1.15;
+  }
+  .podcast-info > p {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    font-size: 0.975rem;
+    margin-bottom: 28px;
+  }
+  .podcast-highlight {
+    background: rgba(123,94,204,0.1);
+    border: 1px solid rgba(123,94,204,0.25);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .podcast-highlight .hl-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--nebula-light);
+    margin-bottom: 8px;
+  }
+  .podcast-highlight .hl-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--star-white);
+    margin-bottom: 8px;
+  }
+  .podcast-highlight p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .podcast-format h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+  .podcast-format ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .podcast-format ul li {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding-left: 16px;
+    position: relative;
+  }
+  .podcast-format ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--nebula);
+  }
+  .episodes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ep-group-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 16px 0 6px;
+  }
+  .ep-group-label:first-child { padding-top: 0; }
+  .ep-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .ep-card:hover {
+    border-color: rgba(168,141,232,0.4);
+    transform: translateX(4px);
+  }
+  .ep-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--nebula-light);
+    min-width: 40px;
+    flex-shrink: 0;
+  }
+  .ep-title {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    flex: 1;
+    line-height: 1.4;
+  }
+  .ep-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    flex-shrink: 0;
+  }
+  .ep-tag-parent { background: rgba(244,101,26,0.12); color: var(--mars-light); }
+  .ep-tag-teacher { background: rgba(62,207,160,0.12); color: var(--mint); }
+  .ep-tag-teen { background: rgba(43,107,232,0.12); color: #6B9EFF; }
+
+  /* ── ACTIVIDADES ── */
+  #actividades { background: var(--cosmos-2); }
+  .actividades-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .event-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  .event-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .event-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+    border-bottom: 1px solid rgba(123,94,204,0.1);
+    position: relative;
+  }
+  .event-date { text-align: center; }
+  .event-month {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .event-day {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--star-white);
+    line-height: 1;
+  }
+  .event-sep {
+    width: 1px; height: 40px;
+    background: rgba(123,94,204,0.2);
+  }
+  .event-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .event-type-badge {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge-taller { background: rgba(244,101,26,0.15); color: var(--mars-light); border: 1px solid rgba(244,101,26,0.2); }
+  .badge-charla { background: rgba(62,207,160,0.15); color: var(--mint); border: 1px solid rgba(62,207,160,0.2); }
+  .badge-podcast { background: rgba(43,107,232,0.15); color: #6B9EFF; border: 1px solid rgba(43,107,232,0.2); }
+  .badge-docentes { background: rgba(123,94,204,0.15); color: var(--nebula-light); border: 1px solid rgba(123,94,204,0.2); }
+  .event-body {
+    padding: 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .event-body h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--star-white);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .event-body > p {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+  .event-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 18px;
+  }
+  .event-meta span {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .event-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid rgba(123,94,204,0.1);
+  }
+  .event-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--mars);
+  }
+  .event-price.free { color: var(--mint); }
+  .btn-sm {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: 100px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s, transform 0.2s;
+    font-family: 'Jost', sans-serif;
+  }
+  .btn-sm:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-sm-mars { background: var(--mars); color: #fff; }
+  .btn-sm-mint { background: rgba(62,207,160,0.15); color: var(--mint); border: 1px solid rgba(62,207,160,0.3); }
+  .btn-sm-blue { background: rgba(43,107,232,0.15); color: #6B9EFF; border: 1px solid rgba(43,107,232,0.3); }
+  .btn-sm-nebula { background: rgba(123,94,204,0.15); color: var(--nebula-light); border: 1px solid rgba(123,94,204,0.3); }
+
+  /* ── CONTACTO ── */
+  #contacto { background: var(--cosmos); }
+  .contacto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .contacto-info h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--star-white);
+    margin: 12px 0 16px;
+    line-height: 1.15;
+  }
+  .contacto-info > p {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    font-size: 0.975rem;
+    margin-bottom: 28px;
+  }
+  .contact-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    backdrop-filter: blur(8px);
+  }
+  .contact-icon {
+    font-size: 1.3rem;
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(244,101,26,0.1);
+    flex-shrink: 0;
+  }
+  .contact-card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .contact-card-value {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .contact-card-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .contact-form {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 36px;
+    backdrop-filter: blur(8px);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(123,94,204,0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.925rem;
+    transition: border-color 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: rgba(244,101,26,0.5);
+  }
+  .form-group textarea { resize: vertical; min-height: 110px; }
+  .form-group select option { background: var(--cosmos-3); color: var(--text-primary); }
+  .btn-submit {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 100px;
+    background: var(--mars);
+    color: #fff;
+    font-family: 'Jost', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(244,101,26,0.4);
+    transition: box-shadow 0.2s, transform 0.2s, background 0.3s;
+    margin-top: 4px;
+  }
+  .btn-submit:hover {
+    box-shadow: 0 4px 40px rgba(244,101,26,0.6);
+    transform: translateY(-2px);
+  }
+  .btn-submit.sent {
+    background: var(--mint);
+    box-shadow: 0 4px 24px rgba(62,207,160,0.4);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(123,94,204,0.15);
+    padding: 36px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .footer-logo span { color: var(--mars); }
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--text-primary); }
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+
+    .concepto-grid { grid-template-columns: 1fr; gap: 40px; }
+    .planet-visual { display: none; }
+
+    .lineas-grid { grid-template-columns: 1fr; }
+
+    .taller-top { grid-template-columns: 1fr; gap: 28px; }
+    .taller-fases { grid-template-columns: 1fr 1fr; }
+    .taller-fases::before { display: none; }
+    .fase { border-right: none; border-bottom: 1px solid rgba(244,101,26,0.08); }
+    .taller-bottom { flex-direction: column; padding: 28px 32px; }
+
+    .podcast-grid { grid-template-columns: 1fr; gap: 40px; }
+
+    .actividades-grid { grid-template-columns: 1fr; }
+
+    .contacto-grid { grid-template-columns: 1fr; gap: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+
+    footer { flex-direction: column; text-align: center; }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 18px; }
+    section { padding: 70px 0; }
+    .taller-fases { grid-template-columns: 1fr; }
+    .taller-top { padding: 32px 24px; }
+    .taller-bottom { padding: 24px; }
+    .fase { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="star-canvas"></canvas>
+
+<!-- ── NAVBAR ── -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Neuro <span>A_Marte</span></a>
+  <ul class="nav-links">
+    <li><a href="#concepto">El Concepto</a></li>
+    <li><a href="#lineas">Servicios</a></li>
+    <li><a href="#taller">Taller</a></li>
+    <li><a href="#podcast">Podcast</a></li>
+    <li><a href="#actividades">Actividades</a></li>
+    <li><a href="#contacto" class="nav-cta">Contáctame</a></li>
+  </ul>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMenu()">✕</button>
+  <a href="#concepto" onclick="toggleMenu()">El Concepto</a>
+  <a href="#lineas" onclick="toggleMenu()">Servicios</a>
+  <a href="#taller" onclick="toggleMenu()">Taller</a>
+  <a href="#podcast" onclick="toggleMenu()">Podcast</a>
+  <a href="#actividades" onclick="toggleMenu()">Actividades</a>
+  <a href="#contacto" onclick="toggleMenu()" style="color:var(--mars)">Contáctame</a>
+</div>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-planet"></div>
+  <div class="orbit-ring orbit-ring-1"></div>
+  <div class="orbit-ring orbit-ring-2"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">🚀 Psicología infantil y adolescente</div>
+    <h1 class="hero-title">
+      El <span class="accent">viaje</span> al<br>
+      <span class="underline-word">bienestar</span> cerebral<br>
+      comienza aquí
+    </h1>
+    <p class="hero-sub">Acompañamos a niños y adolescentes en el tránsito desde la sobreestimulación digital hacia la autorregulación, la atención plena y el bienestar emocional.</p>
+    <div class="hero-btns">
+      <a href="#taller" class="btn-primary">🪐 Reservar taller</a>
+      <a href="#concepto" class="btn-secondary">Conocer más</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Líneas temáticas</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Episodios del podcast</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num">90 min</div>
+        <div class="stat-label">Taller cognitivo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONCEPTO ── -->
+<section id="concepto">
+  <div class="container">
+    <div class="concepto-grid">
+
+      <!-- Visual -->
+      <div class="planet-visual reveal">
+        <div class="planet-sphere"></div>
+        <div class="planet-ring"></div>
+        <div class="planet-label label-earth">🌍 Tierra: ruido digital</div>
+        <div class="planet-label label-journey">✨ El viaje terapéutico</div>
+        <div class="planet-label label-mars">🪐 Marte: bienestar</div>
+      </div>
+
+      <!-- Text -->
+      <div class="concepto-text reveal" style="transition-delay:0.15s">
+        <div class="section-tag">¿Qué es Neuro A_Marte?</div>
+        <h2>Una metáfora que cambia cerebros</h2>
+        <p>Neuro A_Marte es un proyecto de psicología infantil y adolescente que usa el viaje espacial como metáfora del proceso terapéutico: partimos de la Tierra digital y viajamos hacia Marte, un estado de calma, atención y autorregulación.</p>
+
+        <div class="concepto-items">
+          <div class="concepto-item">
+            <div class="concepto-icon icon-mars">🌍</div>
+            <div>
+              <h4>La Tierra — El problema</h4>
+              <p>Sobreestimulación digital, pantallas constantes, impulsividad y dificultades atencionales que afectan el aprendizaje y las relaciones.</p>
+            </div>
+          </div>
+          <div class="concepto-item">
+            <div class="concepto-icon icon-nebula">🚀</div>
+            <div>
+              <h4>El Viaje — El proceso</h4>
+              <p>Intervención psicológica, talleres cognitivos y herramientas prácticas basadas en neurociencia aplicada al desarrollo infantil.</p>
+            </div>
+          </div>
+          <div class="concepto-item">
+            <div class="concepto-icon icon-mint">🪐</div>
+            <div>
+              <h4>Marte — La meta</h4>
+              <p>Autorregulación emocional, atención sostenida, amor propio y bienestar cerebral en un mundo digital.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── LÍNEAS TEMÁTICAS ── -->
+<section id="lineas">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag reveal">Servicios</div>
+      <h2 class="reveal" style="transition-delay:0.1s">Cuatro líneas para llegar a Marte</h2>
+      <p class="reveal" style="transition-delay:0.2s">Contenidos y programas diseñados para las diferentes personas que acompañan el desarrollo infantil y adolescente.</p>
+    </div>
+
+    <div class="lineas-grid">
+
+      <div class="linea-card reveal">
+        <div class="linea-num">01</div>
+        <span class="linea-emoji">🧠</span>
+        <h3>Cerebro y Atención</h3>
+        <p>Neurociencia aplicada al desarrollo: cómo funciona el cerebro en crecimiento y qué factores afectan la atención y el aprendizaje.</p>
+        <div class="tags">
+          <span class="tag">TDAH</span>
+          <span class="tag">Funciones ejecutivas</span>
+          <span class="tag">Neuroplasticidad</span>
+          <span class="tag">Memoria</span>
+        </div>
+        <span class="audience-chip chip-mars">👥 Docentes y padres</span>
+      </div>
+
+      <div class="linea-card reveal" style="transition-delay:0.1s">
+        <div class="linea-num">02</div>
+        <span class="linea-emoji">📱</span>
+        <h3>Tecnología y Salud Mental</h3>
+        <p>El impacto de las pantallas y las redes sociales en el desarrollo cerebral, la autoestima y los hábitos de niños y adolescentes.</p>
+        <div class="tags">
+          <span class="tag">Pantallas</span>
+          <span class="tag">Autoestima</span>
+          <span class="tag">Videojuegos</span>
+          <span class="tag">Límites</span>
+        </div>
+        <span class="audience-chip chip-nebula">👥 Padres y adolescentes</span>
+      </div>
+
+      <div class="linea-card reveal" style="transition-delay:0.2s">
+        <div class="linea-num">03</div>
+        <span class="linea-emoji">💛</span>
+        <h3>Amor Propio y Regulación Emocional</h3>
+        <p>Herramientas prácticas para el manejo de la impulsividad, la ansiedad y el desarrollo de una identidad emocional saludable.</p>
+        <div class="tags">
+          <span class="tag">Autoestima</span>
+          <span class="tag">Impulsividad</span>
+          <span class="tag">Ansiedad</span>
+          <span class="tag">Validación</span>
+        </div>
+        <span class="audience-chip chip-mint">👥 Familias y estudiantes</span>
+      </div>
+
+      <div class="linea-card reveal" style="transition-delay:0.3s">
+        <div class="linea-num">04</div>
+        <span class="linea-emoji">📚</span>
+        <h3>Aprendizaje y Escuela Neurocompatible</h3>
+        <p>Estrategias pedagógicas basadas en neurociencia para crear entornos de aprendizaje que respeten el funcionamiento cerebral.</p>
+        <div class="tags">
+          <span class="tag">Aula inclusiva</span>
+          <span class="tag">Déficit atencional</span>
+          <span class="tag">Movimiento</span>
+          <span class="tag">Motivación</span>
+        </div>
+        <span class="audience-chip chip-blue">👥 Docentes</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TALLER ── -->
+<section id="taller">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag reveal">Taller</div>
+      <h2 class="reveal" style="transition-delay:0.1s">Misión Marte</h2>
+    </div>
+
+    <div class="taller-wrapper reveal">
+      <div class="taller-top">
+        <div>
+          <div class="section-tag">🪐 Misión Marte</div>
+          <h2>Entrenamos cerebros para vivir en el mundo digital</h2>
+          <p>Un taller presencial de 90 minutos diseñado para niños de 6 a 12 años. Combinamos movimiento, cognición y regulación emocional en cuatro fases progresivas que simulan un viaje espacial.</p>
+        </div>
+        <div class="price-box">
+          <div class="price-label">Valor por niño</div>
+          <div class="price-value">$80.000</div>
+          <div class="price-currency">COP por sesión</div>
+          <div class="price-sep"></div>
+          <div class="price-group">Grupo completo (8 niños)<br><strong>$640.000</strong></div>
+        </div>
+      </div>
+
+      <div class="taller-fases">
+        <div class="fase">
+          <div class="fase-header">
+            <div class="fase-num">1</div>
+            <div class="fase-name">Activación</div>
+          </div>
+          <div class="fase-time">⏱ 10 minutos</div>
+          <h4>Encendido de motores</h4>
+          <ul>
+            <li>Juegos motores atencionales</li>
+            <li>Coordinación y alerta cerebral</li>
+          </ul>
+        </div>
+        <div class="fase">
+          <div class="fase-header">
+            <div class="fase-num">2</div>
+            <div class="fase-name">Entrenamiento</div>
+          </div>
+          <div class="fase-time">⏱ 40 minutos</div>
+          <h4>Entrenamiento Cognitivo</h4>
+          <ul>
+            <li>Memoria de trabajo</li>
+            <li>Control inhibitorio</li>
+            <li>Atención sostenida</li>
+            <li>Flexibilidad cognitiva</li>
+          </ul>
+        </div>
+        <div class="fase">
+          <div class="fase-header">
+            <div class="fase-num">3</div>
+            <div class="fase-name">Regulación</div>
+          </div>
+          <div class="fase-time">⏱ 20 minutos</div>
+          <h4>Regulación Emocional</h4>
+          <ul>
+            <li>Técnicas de respiración</li>
+            <li>Pausa cerebral</li>
+            <li>Identificación emocional</li>
+          </ul>
+        </div>
+        <div class="fase">
+          <div class="fase-header">
+            <div class="fase-num">4</div>
+            <div class="fase-name">Misión 🚀</div>
+          </div>
+          <div class="fase-time">⏱ 20 minutos</div>
+          <h4>Misión Marte</h4>
+          <ul>
+            <li>Reto grupal cooperativo</li>
+            <li>Cierre de logro personal</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="taller-bottom">
+        <p class="taller-quote">Entrenamos cerebros infantiles para vivir en un mundo digital sin perder la atención, el aprendizaje y el amor propio.</p>
+        <a href="#contacto" class="btn-primary">Reservar cupo 🚀</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PODCAST ── -->
+<section id="podcast">
+  <div class="container">
+    <div class="podcast-grid">
+
+      <!-- Info -->
+      <div class="podcast-info reveal" id="podcastInfoContent"></div>
+
+      <!-- Episodes -->
+      <div class="reveal" style="transition-delay:0.15s">
+        <div class="episodes-list" id="episodesList"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── ACTIVIDADES ── -->
+<section id="actividades">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag reveal">Calendario</div>
+      <h2 class="reveal" style="transition-delay:0.1s">Misiones programadas</h2>
+      <p class="reveal" style="transition-delay:0.2s">Actividades presenciales y virtuales para familias, docentes y adolescentes.</p>
+    </div>
+
+    <div class="actividades-grid" id="actividadesGrid"></div>
+  </div>
+</section>
+
+<!-- ── CONTACTO ── -->
+<section id="contacto">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag reveal">Contacto</div>
+      <h2 class="reveal" style="transition-delay:0.1s">¿Listo para despegar?</h2>
+      <p class="reveal" style="transition-delay:0.2s">Escríbenos y comencemos el viaje juntos.</p>
+    </div>
+
+    <div class="contacto-grid">
+
+      <!-- Info -->
+      <div class="contacto-info reveal">
+        <div class="contact-cards">
+          <div class="contact-card">
+            <div class="contact-icon">📱</div>
+            <div>
+              <div class="contact-card-label">WhatsApp</div>
+              <div class="contact-card-value">+57 300 268 5861</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">📧</div>
+            <div>
+              <div class="contact-card-label">Correo</div>
+              <div class="contact-card-value">hola@neuroamarte.com</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">📍</div>
+            <div>
+              <div class="contact-card-label">Ubicación</div>
+              <div class="contact-card-value">Cali, Colombia</div>
+              <div class="contact-card-sub">También disponible de forma virtual</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">🕐</div>
+            <div>
+              <div class="contact-card-label">Horarios</div>
+              <div class="contact-card-value">Lun – Vie</div>
+              <div class="contact-card-sub">8:00am – 5:00pm</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon">📸</div>
+            <div>
+              <div class="contact-card-label">Instagram</div>
+              <div class="contact-card-value">@neuro_a_marte</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="contact-form reveal" style="transition-delay:0.15s">
+        <form onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input id="inputNombre" type="text" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input id="inputTelefono" type="tel" placeholder="+57 000 000 0000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input id="inputCorreo" type="email" placeholder="tu@correo.com" required>
+          </div>
+          <div class="form-group">
+            <label>¿Qué te interesa?</label>
+            <select id="inputInteres" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option>Taller Misión Marte</option>
+              <option>Charla para padres</option>
+              <option>Taller para docentes</option>
+              <option>Consulta psicológica</option>
+              <option>Podcast y contenido</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mensaje</label>
+            <textarea id="inputMensaje" placeholder="Cuéntanos en qué podemos ayudarte..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn">Escribir por WhatsApp 💬</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a href="#hero" class="footer-logo">Neuro <span>A_Marte</span></a>
+  <ul class="footer-links">
+    <li><a href="#concepto">El Concepto</a></li>
+    <li><a href="#lineas">Servicios</a></li>
+    <li><a href="#taller">Taller</a></li>
+    <li><a href="#podcast">Podcast</a></li>
+    <li><a href="#actividades">Actividades</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 Neuro A_Marte · Todos los derechos reservados</p>
+</footer>
+
+<script src="podcast-data.js"></script>
+<script src="actividades-data.js"></script>
+<script>
+// ── STARS ──
+const canvas = document.getElementById('star-canvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function initStars() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const count = Math.floor((canvas.width * canvas.height) / 4500);
+  stars = [];
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.2,
+      base: Math.random() * 0.6 + 0.15,
+      speed: Math.random() * 0.8 + 0.2,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+let t = 0;
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  t += 0.016;
+  for (const s of stars) {
+    const alpha = s.base + Math.sin(t * s.speed + s.phase) * 0.3;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(248,244,255,${Math.max(0, alpha)})`;
+    ctx.fill();
+  }
+  requestAnimationFrame(drawStars);
+}
+
+initStars();
+drawStars();
+window.addEventListener('resize', initStars);
+
+// ── SCROLL REVEAL ──
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(el => observer.observe(el));
+
+// ── NAVBAR SCROLL ──
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── MOBILE MENU ──
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── FORM SUBMIT → WHATSAPP ──
+function handleSubmit(e) {
+  e.preventDefault();
+
+  const nombre   = document.getElementById('inputNombre').value.trim();
+  const telefono = document.getElementById('inputTelefono').value.trim();
+  const correo   = document.getElementById('inputCorreo').value.trim();
+  const interes  = document.getElementById('inputInteres').value.trim();
+  const mensaje  = document.getElementById('inputMensaje').value.trim();
+
+  let texto = `¡Hola! Me llamo ${nombre} y encontré su página web de Neuro A_Marte. Me gustaría obtener más información sobre *${interes}*.`;
+
+  if (mensaje) {
+    texto += `\n\n${mensaje}`;
+  }
+
+  texto += `\n\nMi correo es ${correo}`;
+  if (telefono) {
+    texto += ` y mi número de contacto es ${telefono}`;
+  }
+  texto += `. ¡Muchas gracias!`;
+
+  const url = `https://wa.me/573002685861?text=${encodeURIComponent(texto)}`;
+  window.open(url, '_blank');
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = '¡Abriendo WhatsApp! ✅';
+  btn.classList.add('sent');
+  setTimeout(() => {
+    btn.textContent = 'Escribir por WhatsApp 💬';
+    btn.classList.remove('sent');
+  }, 3000);
+}
+</script>
+</body>
+</html>
