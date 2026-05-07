@@ -22,6 +22,11 @@ const {
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div id="intro-overlay">
+    <video id="intro-video" src="/videos/intro.mp4" autoplay muted playsinline></video>
+    <button id="intro-skip">Saltar →</button>
+  </div>
+
   <canvas id="star-canvas"></canvas>
   <slot />
 
@@ -65,6 +70,22 @@ const {
     initStars();
     drawStars();
     window.addEventListener('resize', initStars);
+
+    // ── INTRO VIDEO ──
+    const overlay = document.getElementById('intro-overlay');
+    const video   = document.getElementById('intro-video');
+    const skip    = document.getElementById('intro-skip');
+
+    if (overlay && video && skip) {
+      const el = overlay;
+      function dismissIntro() {
+        el.classList.add('intro-hidden');
+        el.addEventListener('transitionend', () => el.remove(), { once: true });
+      }
+
+      video.addEventListener('ended', dismissIntro);
+      skip.addEventListener('click', dismissIntro);
+    }
 
     // ── SCROLL REVEAL ──
     const revealEls = document.querySelectorAll('.reveal');
