@@ -1,4 +1,31 @@
 ---
+const talleres = [
+  {
+    num: '1',
+    label: 'Taller 1',
+    ages: '5 – 8 años',
+    emoji: '🌙',
+    title: 'Pequeños Exploradores',
+    description: 'Introducción al autocontrol y la atención a través del juego sensorial y el movimiento. Actividades cortas, dinámicas y con mucho cuento espacial.',
+  },
+  {
+    num: '2',
+    label: 'Taller 2',
+    ages: '9 – 12 años',
+    emoji: '🪐',
+    title: 'Astronautas en Formación',
+    description: 'Entrenamiento cognitivo más estructurado: memoria de trabajo, atención sostenida y regulación emocional con retos grupales cooperativos.',
+  },
+  {
+    num: '3',
+    label: 'Taller 3',
+    ages: '13 – 17 años',
+    emoji: '🚀',
+    title: 'Cosmonautas',
+    description: 'Enfocado en funciones ejecutivas, manejo del estrés digital y habilidades socioemocionales. Dinámicas reflexivas adaptadas a la adolescencia.',
+  },
+];
+
 const fases = [
   {
     num: '1',
@@ -36,28 +63,36 @@ const fases = [
     <div class="section-header">
       <div class="section-tag reveal">Taller</div>
       <h2 class="reveal" style="transition-delay:0.1s">Misión Marte</h2>
+      <p class="section-sub reveal" style="transition-delay:0.2s">
+        Un taller presencial de 90 minutos adaptado a cada etapa del desarrollo. Combinamos
+        movimiento, cognición y regulación emocional en cuatro fases que simulan un viaje espacial.
+      </p>
     </div>
 
-    <div class="taller-wrapper reveal">
-      <div class="taller-top">
-        <div>
-          <div class="section-tag">🪐 Misión Marte</div>
-          <h2>Entrenamos cerebros para vivir en el mundo digital</h2>
-          <p>
-            Un taller presencial de 90 minutos diseñado para niños de 6 a 12 años. Combinamos
-            movimiento, cognición y regulación emocional en cuatro fases progresivas que simulan
-            un viaje espacial.
-          </p>
+    <div class="talleres-grid reveal" style="transition-delay:0.25s">
+      {talleres.map((t) => (
+        <div class="taller-card">
+          <div class="taller-card-top">
+            <div class="taller-num-badge">{t.label}</div>
+            <div class="taller-emoji">{t.emoji}</div>
+          </div>
+          <div class="taller-ages">{t.ages}</div>
+          <h3 class="taller-card-title">{t.title}</h3>
+          <p class="taller-card-desc">{t.description}</p>
+          <div class="taller-price-row">
+            <span class="taller-price">$80.000</span>
+            <span class="taller-price-label">COP / sesión</span>
+          </div>
+          <a href="#contacto" class="btn-taller">Reservar cupo →</a>
         </div>
-        <div class="price-box">
-          <div class="price-label">Valor por niño</div>
-          <div class="price-value">$80.000</div>
-          <div class="price-currency">COP por sesión</div>
-          <div class="price-sep"></div>
-          <a href="#contacto" class="price-group-cta">¿Reservas el grupo completo? Escríbenos →</a>
-        </div>
-      </div>
+      ))}
+    </div>
 
+    <div class="metodologia reveal" style="transition-delay:0.3s">
+      <div class="metodologia-header">
+        <div class="section-tag">Metodología compartida · 90 min</div>
+        <p>Las cuatro fases se adaptan al grupo de edad, manteniendo la misma estructura.</p>
+      </div>
       <div class="taller-fases">
         {fases.map((fase) => (
           <div class="fase">
@@ -73,14 +108,14 @@ const fases = [
           </div>
         ))}
       </div>
+    </div>
 
-      <div class="taller-bottom">
-        <p class="taller-quote">
-          Entrenamos cerebros infantiles para vivir en un mundo digital sin perder la atención,
-          el aprendizaje y el amor propio.
-        </p>
-        <a href="#contacto" class="btn-primary">Reservar cupo 🚀</a>
-      </div>
+    <div class="taller-bottom reveal" style="transition-delay:0.35s">
+      <p class="taller-quote">
+        Entrenamos cerebros para vivir en un mundo digital sin perder la atención,
+        el aprendizaje y el amor propio.
+      </p>
+      <a href="#contacto" class="price-group-cta">¿Reservas el grupo completo? Escríbenos →</a>
     </div>
   </div>
 </section>

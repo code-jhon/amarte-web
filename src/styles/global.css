@@ -589,34 +589,123 @@ section {
 
 /* ── TALLER ── */
 #taller { background: var(--cosmos-2); }
-.taller-wrapper {
-  border: 1px solid rgba(244,101,26,0.2);
-  border-radius: 28px;
-  overflow: hidden;
-  backdrop-filter: blur(8px);
-}
-.taller-top {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 48px;
-  padding: 56px;
-  background: rgba(244,101,26,0.04);
-  align-items: start;
-}
-.taller-top h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.7rem, 3vw, 2.4rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--star-white);
-  margin: 12px 0 16px;
-  line-height: 1.15;
-}
-.taller-top p {
+.section-sub {
   color: var(--text-secondary);
+  font-size: 1rem;
   line-height: 1.75;
-  font-size: 0.975rem;
-  max-width: 560px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+.talleres-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 56px;
+}
+.taller-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 22px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.25s, transform 0.25s;
+}
+.taller-card:hover {
+  border-color: rgba(244,101,26,0.45);
+  transform: translateY(-4px);
+}
+.taller-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.taller-num-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mars-light);
+  background: rgba(244,101,26,0.1);
+  border: 1px solid rgba(244,101,26,0.25);
+  border-radius: 100px;
+  padding: 4px 12px;
+}
+.taller-emoji { font-size: 1.6rem; }
+.taller-ages {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.taller-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--star-white);
+  line-height: 1.2;
+}
+.taller-card-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  flex: 1;
+}
+.taller-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 4px;
+}
+.taller-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--mars);
+  line-height: 1;
+}
+.taller-price-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.btn-taller {
+  display: block;
+  text-align: center;
+  padding: 11px 20px;
+  background: rgba(244,101,26,0.1);
+  border: 1px solid rgba(244,101,26,0.35);
+  border-radius: 10px;
+  color: var(--mars-light);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 4px;
+}
+.btn-taller:hover {
+  background: var(--mars);
+  color: #fff;
+  border-color: var(--mars);
+}
+.metodologia {
+  border: 1px solid rgba(244,101,26,0.15);
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+.metodologia-header {
+  padding: 32px 40px 24px;
+  background: rgba(244,101,26,0.04);
+  border-bottom: 1px solid rgba(244,101,26,0.1);
+}
+.metodologia-header p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 10px;
 }
 .price-box {
   background: var(--card-bg);
@@ -756,7 +845,8 @@ section {
 .taller-bottom {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 32px;
   gap: 32px;
   padding: 36px 56px;
   background: rgba(6,3,15,0.5);
@@ -1217,11 +1307,12 @@ footer {
 
   .lineas-grid { grid-template-columns: 1fr; }
 
-  .taller-top { grid-template-columns: 1fr; gap: 28px; }
+  .talleres-grid { grid-template-columns: 1fr; }
   .taller-fases { grid-template-columns: 1fr 1fr; }
   .taller-fases::before { display: none; }
   .fase { border-right: none; border-bottom: 1px solid rgba(244,101,26,0.08); }
-  .taller-bottom { flex-direction: column; padding: 28px 32px; }
+  .taller-bottom { flex-direction: column; gap: 20px; padding: 28px 32px; }
+  .metodologia-header { padding: 24px 28px 20px; }
 
   .podcast-grid { grid-template-columns: 1fr; gap: 40px; }
 
@@ -1237,7 +1328,6 @@ footer {
   nav { padding: 0 18px; }
   section { padding: 70px 0; }
   .taller-fases { grid-template-columns: 1fr; }
-  .taller-top { padding: 32px 24px; }
   .taller-bottom { padding: 24px; }
   .fase { padding: 24px; }
 }
