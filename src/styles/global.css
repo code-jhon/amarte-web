@@ -653,14 +653,22 @@ section {
   background: rgba(244,101,26,0.15);
   margin: 16px 0;
 }
-.price-group {
+.price-group-cta {
+  display: block;
   font-size: 0.8rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--mars-light);
+  text-decoration: none;
+  text-align: center;
+  padding: 8px 12px;
+  border: 1px solid rgba(244,101,26,0.35);
+  border-radius: 8px;
+  background: rgba(244,101,26,0.06);
+  transition: background 0.2s, color 0.2s;
 }
-.price-group strong {
-  color: var(--text-primary);
-  font-weight: 700;
+.price-group-cta:hover {
+  background: rgba(244,101,26,0.15);
+  color: var(--star-white);
 }
 .taller-fases {
   display: grid;
