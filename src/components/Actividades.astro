@@ -42,6 +42,8 @@ import { ACTIVIDADES_MOCK, EVENT_TYPE } from '../data/actividades.js';
                 <span class={`event-price${event.free ? ' free' : ''}`}>{event.price}</span>
                 {event.type === 'taller' || event.type === 'docentes' ? (
                   <a href="https://forms.gle/gjHJs8NqD855q9x89" target="_blank" rel="noopener" class={`btn-sm ${type.btnClass}`}>{event.btnLabel}</a>
+                ) : event.type === 'charla' ? (
+                  <a href="https://forms.gle/Hz6D7XG4q2DRNVBL9" target="_blank" rel="noopener" class={`btn-sm ${type.btnClass}`}>{event.btnLabel}</a>
                 ) : (
                   <button class={`btn-sm ${type.btnClass}`}>{event.btnLabel}</button>
                 )}
